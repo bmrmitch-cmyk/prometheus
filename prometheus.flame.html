@@ -6,10 +6,10 @@
 <title>Prometheus.Flame</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0f;color:#fff}
+html,body{width:100%;min-height:100vh;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0f;color:#fff}
 canvas#flameCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.container{position:relative;z-index:1;width:100%;height:100vh;display:flex;align-items:center;justify-content:center}
-.player{background:rgba(10,10,18,0.6);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(100,160,255,0.15);border-radius:24px;padding:36px 40px 32px;width:480px;max-width:92vw;box-shadow:0 0 60px rgba(60,120,255,0.08),0 0 120px rgba(60,120,255,0.04);transition:box-shadow 0.6s ease}
+.container{position:relative;z-index:1;width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px 0}
+.player{background:rgba(10,10,18,0.6);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(100,160,255,0.15);border-radius:24px;padding:36px 40px 32px;width:480px;max-width:92vw;box-shadow:0 0 60px rgba(60,120,255,0.08),0 0 120px rgba(60,120,255,0.04);transition:box-shadow 0.6s ease;max-height:95vh;overflow-y:auto}
 .player:hover{box-shadow:0 0 80px rgba(60,120,255,0.15),0 0 160px rgba(60,120,255,0.06)}
 .player-title{font-size:13px;text-transform:uppercase;letter-spacing:3px;color:rgba(100,180,255,0.5);margin-bottom:6px;font-weight:500}
 .player-headline{font-size:26px;font-weight:700;letter-spacing:-0.02em;margin-bottom:28px;background:linear-gradient(135deg,#8ab4ff,#4d7dff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -42,6 +42,9 @@ canvas#flameCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
   <div class="player">
     <div class="player-title">&#x266B; Playlist</div>
     <h1 class="player-headline">I'm Getting A Divorce</h1>
+    <div class="spotify-embed">
+      <iframe id="spotifyPlayer" data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/4gdQamULpFs7WeyFGfmTCZ?utm_source=generator&si=1a1cebbd136046ba" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
     <div class="song-list">
       <div class="song-item active" onclick="playTrack('4gdQamULpFs7WeyFGfmTCZ',this)">
         <span class="song-num">01</span>
@@ -93,9 +96,6 @@ canvas#flameCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
           <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         </button>
       </div>
-    </div>
-    <div class="spotify-embed">
-      <iframe id="spotifyPlayer" data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/4gdQamULpFs7WeyFGfmTCZ?utm_source=generator&si=1a1cebbd136046ba" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
     <div class="divider"></div>
     <div class="footer-meta">
