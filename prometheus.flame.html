@@ -23,12 +23,6 @@ canvas#flameCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
 .play-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(80,140,255,0.15);color:#7ab4ff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.25s;flex-shrink:0}
 .play-btn:hover{background:rgba(80,140,255,0.3);color:#a0ccff;transform:scale(1.05)}
 .play-btn svg{width:16px;height:16px;margin-left:1px}
-.song-list{max-height:280px;overflow-y:auto;margin-bottom:16px;padding-right:4px;scrollbar-width:thin;scrollbar-color:rgba(100,160,255,0.15) transparent}
-.song-list::-webkit-scrollbar{width:4px}
-.song-list::-webkit-scrollbar-thumb{background:rgba(100,160,255,0.2);border-radius:4px}
-.song-item.active{background:rgba(80,140,255,0.12);border-color:rgba(100,160,255,0.3)}
-.song-item.active .song-num{color:rgba(100,180,255,0.7)}
-.song-item{cursor:pointer}
 .spotify-embed{border-radius:14px;overflow:hidden;border:1px solid rgba(100,160,255,0.08)}
 .spotify-embed iframe{width:100%;border:none;display:block}
 .footer-meta{margin-top:18px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(100,180,255,0.25);letter-spacing:0.5px}
@@ -43,80 +37,14 @@ canvas#flameCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
   <div class="player">
     <div class="player-title">&#x266B; Playlist</div>
     <h1 class="player-headline">I'm Getting A Divorce</h1>
-    <div class="song-list" id="songList">
-      <div class="song-item active" data-src="https://open.spotify.com/embed/track/4gdQamULpFs7WeyFGfmTCZ?utm_source=generator&si=1a1cebbd136046ba">
-        <span class="song-num">01</span>
-        <span class="song-info">
-          <div class="song-name">love. (feat. Zacari)</div>
-          <div class="song-artist">Kendrick Lamar</div>
-        </span>
-        <span class="song-duration">3:33</span>
-        <button class="play-btn" onclick="event.stopPropagation();playSong(this)" title="Play">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </button>
-      </div>
-      <div class="song-item" data-src="https://open.spotify.com/embed/track/0QrZqChWt8jLg2W2iBwMtf?utm_source=generator">
-        <span class="song-num">02</span>
-        <span class="song-info">
-          <div class="song-name">Somebody That I Used To Know</div>
-          <div class="song-artist">Gotye feat. Kimbra</div>
-        </span>
-        <span class="song-duration">4:04</span>
-        <button class="play-btn" onclick="event.stopPropagation();playSong(this)" title="Play">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </button>
-      </div>
-      <div class="song-item" data-src="https://open.spotify.com/embed/track/3f9QHdMhF9whWwPJWHtgEn?utm_source=generator">
-        <span class="song-num">03</span>
-        <span class="song-info">
-          <div class="song-name">We Are Never Ever Getting Back Together</div>
-          <div class="song-artist">Taylor Swift</div>
-        </span>
-        <span class="song-duration">3:13</span>
-        <button class="play-btn" onclick="event.stopPropagation();playSong(this)" title="Play">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </button>
-      </div>
-      <div class="song-item" data-src="https://open.spotify.com/embed/track/5N7kL7mT0OGXgOjeI32ywe?utm_source=generator">
-        <span class="song-num">04</span>
-        <span class="song-info">
-          <div class="song-name">Since U Been Gone</div>
-          <div class="song-artist">Kelly Clarkson</div>
-        </span>
-        <span class="song-duration">3:08</span>
-        <button class="play-btn" onclick="event.stopPropagation();playSong(this)" title="Play">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </button>
-      </div>
-      <div class="song-item" data-src="https://open.spotify.com/embed/track/7MXVkk9YMctZqd1Srtv4MB?utm_source=generator">
-        <span class="song-num">05</span>
-        <span class="song-info">
-          <div class="song-name">Irreplaceable</div>
-          <div class="song-artist">Beyoncé</div>
-        </span>
-        <span class="song-duration">3:47</span>
-        <button class="play-btn" onclick="event.stopPropagation();playSong(this)" title="Play">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </button>
-      </div>
-    </div>
     <div class="spotify-embed">
-      <iframe id="spotifyPlayer" data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/4gdQamULpFs7WeyFGfmTCZ?utm_source=generator&si=1a1cebbd136046ba" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <iframe id="spotifyPlayer" data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/6Ni3ftx7WG99FOcLKROIQ2?utm_source=generator&si=dfd40028037a43db" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
     <div class="divider"></div>
     <div class="footer-meta">
       <span>Prometheus.Flame</span>
-      <span>5 tracks</span>
+      <span>1 track</span>
     </div>
-    <script>
-    function playSong(btn){
-      const item=btn.closest('.song-item');
-      const src=item.dataset.src;
-      document.getElementById('spotifyPlayer').src=src;
-      document.querySelectorAll('.song-item').forEach(s=>s.classList.remove('active'));
-      item.classList.add('active');
-    }
-    </script>
   </div>
 </div>
 <script>
