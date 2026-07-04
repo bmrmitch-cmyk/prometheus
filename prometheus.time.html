@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prometheus.Time</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#08080e;color:#fff}
+canvas#flameCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.taurus-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:0.55;mix-blend-mode:screen}
+.taurus-overlay svg{width:80vmin;height:80vmin;filter:drop-shadow(0 0 80px rgba(80,160,255,0.3)) drop-shadow(0 0 160px rgba(80,120,255,0.15));animation:surge 4s ease-in-out infinite}
+@keyframes surge{
+  0%,100%{transform:scale(1) translateY(0);opacity:0.5}
+  25%{opacity:0.7}
+  50%{transform:scale(1.04) translateY(-12px);opacity:0.9}
+  75%{opacity:0.7}
+}
+.container{position:relative;z-index:2;width:100%;height:100vh;display:flex;align-items:center;justify-content:center}
+.player{background:rgba(10,10,18,0.55);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(100,160,255,0.12);border-radius:24px;padding:36px 40px 32px;width:420px;max-width:92vw;box-shadow:0 0 60px rgba(60,120,255,0.06);transition:box-shadow 0.6s ease}
+.player:hover{box-shadow:0 0 80px rgba(60,120,255,0.12),0 0 160px rgba(60,120,255,0.05)}
+.player-label{font-size:11px;text-transform:uppercase;letter-spacing:4px;color:rgba(100,180,255,0.35);margin-bottom:2px;font-weight:500}
+.player-headline{font-size:26px;font-weight:700;letter-spacing:-0.02em;margin-bottom:24px;background:linear-gradient(135deg,#8ab4ff,#4d7dff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.song-item{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(100,160,255,0.08);margin-bottom:10px;transition:background 0.3s,border-color 0.3s}
+.song-item:hover{background:rgba(255,255,255,0.06);border-color:rgba(100,160,255,0.2)}
+.song-num{font-size:13px;font-weight:600;color:rgba(100,180,255,0.35);min-width:20px;text-align:right;font-variant-numeric:tabular-nums}
+.song-info{flex:1;min-width:0}
+.song-name{font-size:15px;font-weight:600;color:#e8eeff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song-artist{font-size:12px;color:rgba(180,200,255,0.45);margin-top:1px}
+.song-duration{font-size:12px;color:rgba(100,180,255,0.35);font-variant-numeric:tabular-nums}
+.play-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(80,140,255,0.15);color:#7ab4ff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.25s;flex-shrink:0}
+.play-btn:hover{background:rgba(80,140,255,0.3);color:#a0ccff;transform:scale(1.05)}
+.play-btn svg{width:16px;height:16px;margin-left:1px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(100,160,255,0.1),transparent);margin:16px 0}
+.footer-meta{margin-top:4px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(100,180,255,0.25);letter-spacing:0.5px}
+@media(max-width:500px){.player{padding:24px 20px 26px}.player-headline{font-size:22px}.song-item{padding:10px 12px}.taurus-overlay svg{width:95vmin;height:95vmin}}
+</style>
+</head>
+<body>
+<canvas id="flameCanvas"></canvas>
+<div class="taurus-overlay">
+  <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bullGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#7ab8ff"/>
+        <stop offset="50%" stop-color="#4a7dff"/>
+        <stop offset="100%" stop-color="#2a4dbf"/>
+      </linearGradient>
+      <linearGradient id="hornGrad" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="#c8e0ff"/>
+        <stop offset="100%" stop-color="#6a9eff"/>
+      </linearGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- horns -->
+    <path d="M115 80 Q100 30 60 15 Q55 13 52 18 Q50 25 65 50 Q80 75 105 90" fill="url(#hornGrad)" opacity="0.9"/>
+    <path d="M285 80 Q300 30 340 15 Q345 13 348 18 Q350 25 335 50 Q320 75 295 90" fill="url(#hornGrad)" opacity="0.9"/>
+    <!-- head -->
+    <path d="M200 100 Q260 100 280 140 Q295 170 290 200 Q285 230 270 250 Q250 270 220 280 Q210 283 200 284 Q190 283 180 280 Q150 270 130 250 Q115 230 110 200 Q105 170 120 140 Q140 100 200 100Z" fill="url(#bullGrad)" filter="url(#glow)" opacity="0.85"/>
+    <!-- snout -->
+    <ellipse cx="200" cy="250" rx="40" ry="28" fill="#1a2a4a" opacity="0.6"/>
+    <ellipse cx="200" cy="250" rx="24" ry="16" fill="#0d1a33" opacity="0.5"/>
+    <!-- eyes -->
+    <ellipse cx="170" cy="185" rx="16" ry="20" fill="#ff4422" opacity="0.9"/>
+    <ellipse cx="230" cy="185" rx="16" ry="20" fill="#ff4422" opacity="0.9"/>
+    <ellipse cx="170" cy="185" rx="7" ry="9" fill="#ffaa33" opacity="0.7"/>
+    <ellipse cx="230" cy="185" rx="7" ry="9" fill="#ffaa33" opacity="0.7"/>
+    <ellipse cx="170" cy="182" rx="3" ry="4" fill="#fff" opacity="0.4"/>
+    <ellipse cx="230" cy="182" rx="3" ry="4" fill="#fff" opacity="0.4"/>
+    <!-- nostrils -->
+    <ellipse cx="190" cy="258" rx="6" ry="4" fill="#0a1228" opacity="0.7"/>
+    <ellipse cx="210" cy="258" rx="6" ry="4" fill="#0a1228" opacity="0.7"/>
+    <!-- snout glow -->
+    <ellipse cx="200" cy="250" rx="38" ry="26" fill="none" stroke="rgba(100,180,255,0.15)" stroke-width="2"/>
+    <!-- ear left -->
+    <path d="M135 130 Q115 115 108 128 Q102 140 120 148 Q132 150 140 144" fill="url(#bullGrad)" opacity="0.7"/>
+    <!-- ear right -->
+    <path d="M265 130 Q285 115 292 128 Q298 140 280 148 Q268 150 260 144" fill="url(#bullGrad)" opacity="0.7"/>
+    <!-- ring in nose -->
+    <circle cx="200" cy="265" r="12" fill="none" stroke="rgba(200,220,255,0.2)" stroke-width="2.5"/>
+  </svg>
+</div>
+<div class="container">
+  <div class="player">
+    <div class="player-label">&#x23F0; Prometheus.Time</div>
+    <h1 class="player-headline">The Taurus Session</h1>
+    <div class="song-item">
+      <span class="song-num">01</span>
+      <span class="song-info">
+        <div class="song-name">HUMBLE.</div>
+        <div class="song-artist">Kendrick Lamar</div>
+      </span>
+      <span class="song-duration">2:57</span>
+      <button class="play-btn" onclick="window.open('https://open.spotify.com/track/7KXjTSCq5nL1LoYtL7XAwS','_blank')" title="Open in Spotify">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
+    </div>
+    <div class="song-item">
+      <span class="song-num">02</span>
+      <span class="song-info">
+        <div class="song-name">DNA.</div>
+        <div class="song-artist">Kendrick Lamar</div>
+      </span>
+      <span class="song-duration">3:05</span>
+      <button class="play-btn" onclick="window.open('https://open.spotify.com/track/6HnILoFqLuiFJ2M3Qj7Jf3','_blank')" title="Open in Spotify">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
+    </div>
+    <div class="song-item">
+      <span class="song-num">03</span>
+      <span class="song-info">
+        <div class="song-name">Element.</div>
+        <div class="song-artist">Kendrick Lamar</div>
+      </span>
+      <span class="song-duration">3:28</span>
+      <button class="play-btn" onclick="window.open('https://open.spotify.com/track/57F2dNkUszRhN6sS4QwBi4','_blank')" title="Open in Spotify">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
+    </div>
+    <div class="divider"></div>
+    <div class="footer-meta">
+      <span>Prometheus.Time</span>
+      <span>3 tracks &middot; 9:30</span>
+    </div>
+  </div>
+</div>
+<script>
+const canvas=document.getElementById('flameCanvas');
+const ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+window.addEventListener('resize',resize);resize();
+
+const particles=[];
+const MAX_PARTICLES=220;
+
+function spawnFlame(){
+  for(let i=particles.length;i<MAX_PARTICLES;i++){
+    const cx=W*0.5+(Math.random()-0.5)*W*0.6;
+    particles.push({
+      x:cx+(Math.random()-0.5)*160,
+      y:H+20,
+      vx:(Math.random()-0.5)*1.4,
+      vy:-Math.random()*3.0-1.5,
+      size:Math.random()*6+3,
+      life:Math.random()*0.7+0.3,
+      maxLife:Math.random()*0.6+0.5,
+      hue:185+Math.random()*45,
+      sat:55+Math.random()*45,
+      lightness:45+Math.random()*35,
+    });
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+
+  spawnFlame();
+
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.vy-=0.018;
+    p.vx+=Math.sin(p.y*0.012+p.x*0.012)*0.04;
+    p.life-=0.005-p.size*0.0001;
+    p.size*=0.997;
+
+    if(p.life<=0||p.y<-50||p.size<0.5){particles.splice(i,1);continue}
+
+    const alpha=p.life*0.5;
+    const r=p.size*(0.6+0.5*(1-p.life/p.maxLife));
+    const grad=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r*2.8);
+    const hue=p.hue+Math.sin(p.y*0.02+p.x*0.015)*12;
+    grad.addColorStop(0,`hsla(${hue},${p.sat}%,${p.lightness+10}%,${alpha*0.6})`);
+    grad.addColorStop(0.3,`hsla(${hue+5},${p.sat-10}%,${p.lightness}%,${alpha*0.3})`);
+    grad.addColorStop(0.7,`hsla(${hue+10},${p.sat-20}%,${p.lightness-15}%,${alpha*0.1})`);
+    grad.addColorStop(1,`hsla(${hue+15},${p.sat-30}%,${p.lightness-30}%,0)`);
+    ctx.fillStyle=grad;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,r*2.8,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  const glow=ctx.createRadialGradient(W/2,H+20,0,W/2,H+20,W*0.6);
+  glow.addColorStop(0,`hsla(210,80%,60%,0.05)`);
+  glow.addColorStop(0.5,`hsla(210,80%,50%,0.025)`);
+  glow.addColorStop(1,`hsla(210,80%,40%,0)`);
+  ctx.fillStyle=glow;
+  ctx.fillRect(0,0,W,H);
+
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>

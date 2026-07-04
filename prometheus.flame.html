@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prometheus.Flame</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a0f;color:#fff}
+canvas#flameCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.container{position:relative;z-index:1;width:100%;height:100vh;display:flex;align-items:center;justify-content:center}
+.player{background:rgba(10,10,18,0.6);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(100,160,255,0.15);border-radius:24px;padding:36px 40px 32px;width:420px;max-width:92vw;box-shadow:0 0 60px rgba(60,120,255,0.08),0 0 120px rgba(60,120,255,0.04);transition:box-shadow 0.6s ease}
+.player:hover{box-shadow:0 0 80px rgba(60,120,255,0.15),0 0 160px rgba(60,120,255,0.06)}
+.player-title{font-size:13px;text-transform:uppercase;letter-spacing:3px;color:rgba(100,180,255,0.5);margin-bottom:6px;font-weight:500}
+.player-headline{font-size:26px;font-weight:700;letter-spacing:-0.02em;margin-bottom:28px;background:linear-gradient(135deg,#8ab4ff,#4d7dff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.song-item{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(100,160,255,0.08);margin-bottom:10px;transition:background 0.3s,border-color 0.3s}
+.song-item:hover{background:rgba(255,255,255,0.06);border-color:rgba(100,160,255,0.2)}
+.song-num{font-size:13px;font-weight:600;color:rgba(100,180,255,0.35);min-width:20px;text-align:right;font-variant-numeric:tabular-nums}
+.song-info{flex:1;min-width:0}
+.song-name{font-size:15px;font-weight:600;color:#e8eeff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song-artist{font-size:12px;color:rgba(180,200,255,0.45);margin-top:1px}
+.song-duration{font-size:12px;color:rgba(100,180,255,0.35);font-variant-numeric:tabular-nums}
+.play-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(80,140,255,0.15);color:#7ab4ff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.25s;flex-shrink:0}
+.play-btn:hover{background:rgba(80,140,255,0.3);color:#a0ccff;transform:scale(1.05)}
+.play-btn svg{width:16px;height:16px;margin-left:1px}
+.spotify-embed{margin-top:18px;border-radius:14px;overflow:hidden;border:1px solid rgba(100,160,255,0.08)}
+.spotify-embed iframe{width:100%;border:none;display:block}
+.footer-meta{margin-top:18px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(100,180,255,0.25);letter-spacing:0.5px}
+.footer-meta span{display:flex;align-items:center;gap:4px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(100,160,255,0.1),transparent);margin:16px 0}
+@media(max-width:500px){.player{padding:24px 20px 26px}.player-headline{font-size:22px}.song-item{padding:10px 12px}}
+</style>
+</head>
+<body>
+<canvas id="flameCanvas"></canvas>
+<div class="container">
+  <div class="player">
+    <div class="player-title">&#x266B; Playlist</div>
+    <h1 class="player-headline">I'm Getting A Divorce</h1>
+    <div class="spotify-embed">
+      <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/4gdQamULpFs7WeyFGfmTCZ?utm_source=generator&si=1a1cebbd136046ba" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+    <div class="divider"></div>
+    <div class="footer-meta">
+      <span>Prometheus.Flame</span>
+      <span>1 track</span>
+    </div>
+  </div>
+</div>
+<script>
+const canvas=document.getElementById('flameCanvas');
+const ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+window.addEventListener('resize',resize);resize();
+
+const particles=[];
+const MAX_PARTICLES=180;
+
+function spawnFlame(){
+  for(let i=particles.length;i<MAX_PARTICLES;i++){
+    const cx=W*0.5+(Math.random()-0.5)*W*0.4;
+    particles.push({
+      x:cx+(Math.random()-0.5)*120,
+      y:H+20,
+      vx:(Math.random()-0.5)*1.2,
+      vy:-Math.random()*2.8-1.2,
+      size:Math.random()*5+3,
+      life:Math.random()*0.7+0.3,
+      maxLife:Math.random()*0.6+0.5,
+      hue:190+Math.random()*40,
+      sat:60+Math.random()*40,
+      lightness:50+Math.random()*30,
+    });
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+
+  spawnFlame();
+
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.vy-=0.015;
+    p.vx+=Math.sin(p.y*0.01+p.x*0.01)*0.03;
+    p.life-=0.005-p.size*0.0001;
+    p.size*=0.998;
+
+    if(p.life<=0||p.y<-50||p.size<0.5){particles.splice(i,1);continue}
+
+    const alpha=p.life*0.55;
+    const r=p.size*(0.6+0.5*(1-p.life/p.maxLife));
+    const grad=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r*2.5);
+    const hue=p.hue+Math.sin(p.y*0.02+p.x*0.015)*10;
+    grad.addColorStop(0,`hsla(${hue},${p.sat}%,${p.lightness+10}%,${alpha*0.6})`);
+    grad.addColorStop(0.3,`hsla(${hue+5},${p.sat-10}%,${p.lightness}%,${alpha*0.3})`);
+    grad.addColorStop(0.7,`hsla(${hue+10},${p.sat-20}%,${p.lightness-15}%,${alpha*0.1})`);
+    grad.addColorStop(1,`hsla(${hue+15},${p.sat-30}%,${p.lightness-30}%,0)`);
+    ctx.fillStyle=grad;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,r*2.5,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  // subtle glow at bottom
+  const glow=ctx.createRadialGradient(W/2,H+20,0,W/2,H+20,W*0.6);
+  glow.addColorStop(0,`hsla(210,80%,60%,0.04)`);
+  glow.addColorStop(0.5,`hsla(210,80%,50%,0.02)`);
+  glow.addColorStop(1,`hsla(210,80%,40%,0)`);
+  ctx.fillStyle=glow;
+  ctx.fillRect(0,0,W,H);
+
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
