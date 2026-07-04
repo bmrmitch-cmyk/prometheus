@@ -13,8 +13,13 @@ canvas#flameCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
 .player:hover{box-shadow:0 0 80px rgba(60,120,255,0.15),0 0 160px rgba(60,120,255,0.06)}
 .player-title{font-size:13px;text-transform:uppercase;letter-spacing:3px;color:rgba(100,180,255,0.5);margin-bottom:6px;font-weight:500}
 .player-headline{font-size:26px;font-weight:700;letter-spacing:-0.02em;margin-bottom:28px;background:linear-gradient(135deg,#8ab4ff,#4d7dff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.song-item{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(100,160,255,0.08);margin-bottom:10px;transition:background 0.3s,border-color 0.3s}
+.song-list{max-height:280px;overflow-y:auto;margin-bottom:16px;padding-right:4px;scrollbar-width:thin;scrollbar-color:rgba(100,160,255,0.15) transparent}
+.song-list::-webkit-scrollbar{width:4px}
+.song-list::-webkit-scrollbar-thumb{background:rgba(100,160,255,0.2);border-radius:4px}
+.song-item{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(100,160,255,0.08);margin-bottom:10px;transition:background 0.3s,border-color 0.3s;cursor:pointer}
 .song-item:hover{background:rgba(255,255,255,0.06);border-color:rgba(100,160,255,0.2)}
+.song-item.active{background:rgba(80,140,255,0.12);border-color:rgba(100,160,255,0.3)}
+.song-item.active .song-num{color:rgba(100,180,255,0.7)}
 .song-num{font-size:13px;font-weight:600;color:rgba(100,180,255,0.35);min-width:20px;text-align:right;font-variant-numeric:tabular-nums}
 .song-info{flex:1;min-width:0}
 .song-name{font-size:15px;font-weight:600;color:#e8eeff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -37,14 +42,74 @@ canvas#flameCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
   <div class="player">
     <div class="player-title">&#x266B; Playlist</div>
     <h1 class="player-headline">I'm Getting A Divorce</h1>
+    <div class="song-list">
+      <div class="song-item active" onclick="playTrack('4gdQamULpFs7WeyFGfmTCZ',this)">
+        <span class="song-num">01</span>
+        <span class="song-info">
+          <div class="song-name">Lose My Cool</div>
+          <div class="song-artist">Amber Mark, Franc Moody</div>
+        </span>
+        <button class="play-btn" onclick="event.stopPropagation();playTrack('4gdQamULpFs7WeyFGfmTCZ',this)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+      </div>
+      <div class="song-item" onclick="playTrack('6Ni3ftx7WG99FOcLKROIQ2',this)">
+        <span class="song-num">02</span>
+        <span class="song-info">
+          <div class="song-name">HAVE YOU SEEN ME DANCE ALONE?</div>
+          <div class="song-artist">TOMORA, AURORA, Tom Rowlands, Rosa Pistola</div>
+        </span>
+        <button class="play-btn" onclick="event.stopPropagation();playTrack('6Ni3ftx7WG99FOcLKROIQ2',this)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+      </div>
+      <div class="song-item" onclick="playTrack('6Z7BAK7YBCwfKIjIkFQyYj',this)">
+        <span class="song-num">03</span>
+        <span class="song-info">
+          <div class="song-name">Single</div>
+          <div class="song-artist">Yarin Primak, AKOSIA</div>
+        </span>
+        <button class="play-btn" onclick="event.stopPropagation();playTrack('6Z7BAK7YBCwfKIjIkFQyYj',this)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+      </div>
+      <div class="song-item" onclick="playTrack('38YqXnZeq4hGiIzvTMdqvq',this)">
+        <span class="song-num">04</span>
+        <span class="song-info">
+          <div class="song-name">I Used To</div>
+          <div class="song-artist">Lekota</div>
+        </span>
+        <button class="play-btn" onclick="event.stopPropagation();playTrack('38YqXnZeq4hGiIzvTMdqvq',this)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+      </div>
+      <div class="song-item" onclick="playTrack('05IOuexttkZG6eQLFi3v40',this)">
+        <span class="song-num">05</span>
+        <span class="song-info">
+          <div class="song-name">New Bottega</div>
+          <div class="song-artist">Torren Foot, Azealia Banks</div>
+        </span>
+        <button class="play-btn" onclick="event.stopPropagation();playTrack('05IOuexttkZG6eQLFi3v40',this)">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+      </div>
+    </div>
     <div class="spotify-embed">
-      <iframe id="spotifyPlayer" data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/05IOuexttkZG6eQLFi3v40?utm_source=generator&si=a987c66d26da4f54" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <iframe id="spotifyPlayer" data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/4gdQamULpFs7WeyFGfmTCZ?utm_source=generator&si=1a1cebbd136046ba" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
     <div class="divider"></div>
     <div class="footer-meta">
       <span>Prometheus.Flame</span>
-      <span>1 track</span>
+      <span>5 tracks</span>
     </div>
+    <script>
+    function playTrack(id,el){
+      const iframe=document.getElementById('spotifyPlayer');
+      iframe.src='https://open.spotify.com/embed/track/'+id+'?utm_source=generator';
+      document.querySelectorAll('.song-item').forEach(s=>s.classList.remove('active'));
+      (el.classList?el:el.closest('.song-item')).classList.add('active');
+    }
+    </script>
   </div>
 </div>
 <script>
